@@ -23,6 +23,7 @@ func init() {
 	if err != nil {
 		log.Fatalf("Invalid bot parameters: %v | Check the .env", err)
 	}
+
 }
 
 // Slash Commands
@@ -38,16 +39,20 @@ var (
 			Description: "server uptime",
 		},
 		{
-			Name:        "startserver",
+			Name:        "serverstart",
 			Description: "starts the minecraft server",
 		},
 		{
-			Name:        "stopserver",
+			Name:        "serverstop",
 			Description: "stops the minecraft server",
 		},
 		{
-			Name:        "scaleserver",
+			Name:        "serverscale",
 			Description: "scales the minecraft server | default is auto",
+		},
+		{
+			Name:        "help",
+			Description: "help",
 		},
 	}
 
@@ -124,6 +129,60 @@ var (
 				},
 			})
 		},
+		"help": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{
+						{
+							Title: "List of Commands",
+							Color: 0xFF0090,
+							Fields: []*discordgo.MessageEmbedField{
+								{
+									Name:   "/botstatus",
+									Value:  "Shows bot uptime",
+									Inline: false,
+								},
+								{
+									Name:   "/serverstatus",
+									Value:  "Shows server uptime and status",
+									Inline: false,
+								},
+								{
+									Name:   "/serverstart",
+									Value:  "Starts the Minecraft server",
+									Inline: false,
+								},
+								{
+									Name:   "/serverstop",
+									Value:  "Stops the Minecraft server",
+									Inline: false,
+								},
+								{
+									Name:   "/serverscale",
+									Value:  "Scales the Minecraft server",
+									Inline: false,
+								},
+							},
+						},
+						{
+							Title: "Servers",
+							Color: 0xFF0090,
+							Fields: []*discordgo.MessageEmbedField{
+								{
+									Value:  "SERVER 1",
+									Inline: false,
+								},
+								{
+									Value:  "SERVER 2",
+									Inline: false,
+								},
+							},
+						},
+					},
+				},
+			})
+		},
 	}
 )
 
@@ -140,6 +199,15 @@ func main() {
 
 	s.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		log.Printf("Logged in as: %v#%v", s.State.User.Username, s.State.User.Discriminator)
+		s.UpdateStatusComplex(discordgo.UpdateStatusData{
+			Activities: []*discordgo.Activity{
+				{
+					Name: "Your Minecraft Server",
+					Type: discordgo.ActivityTypeGame,
+				},
+			},
+			Status: "online",
+		})
 	})
 
 	err := s.Open()
