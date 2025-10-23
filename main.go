@@ -12,7 +12,7 @@ import (
 )
 
 // Global Variables
-var s *discordgo.Session 
+var s *discordgo.Session
 
 func init() {
 	godotenv.Load()
@@ -31,15 +31,10 @@ var (
 		{
 			Name: "botstatus",
 			// All commands and options must have a description
-			// Commands/options without description will fail the registration
-			// of the command.
 			Description: "bot uptime",
 		},
 		{
-			Name: "serverstatus",
-			// All commands and options must have a description
-			// Commands/options without description will fail the registration
-			// of the command.
+			Name:        "serverstatus",
 			Description: "server uptime",
 		},
 		{

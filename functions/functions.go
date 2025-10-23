@@ -26,10 +26,10 @@ func BotUptime() string {
 func ServerStatus() string {
 	godotenv.Load()
 	log.Print("Getting bot token from .env file")
-	serverip := os.Getenv("SERVERIP")
+	server := os.Getenv("SERVERADD")
 
 	log.Print("Fetching server information")
-	url := fmt.Sprintf("http://%s", serverip)
+	url := fmt.Sprintf("http://%s", server)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
