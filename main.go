@@ -129,6 +129,34 @@ var (
 				},
 			})
 		},
+		"databasestart": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			h.DatabaseInit()
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{
+						{
+							Title: "Initializing Database...",
+							Color: 0xADD8E6,
+						},
+					},
+				},
+			})
+		},
+		"databasestop": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			h.DatabaseDestroy()
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{
+						{
+							Title: "Destroying Database...",
+							Color: 0xADD8E6,
+						},
+					},
+				},
+			})
+		},
 		"help": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -163,6 +191,16 @@ var (
 									Value:  "Scales the Minecraft server",
 									Inline: false,
 								},
+								{
+									Name:   "/databasestart",
+									Value:  "Starts the database for the bot",
+									Inline: false,
+								},
+								{
+									Name:   "/databasedestroy",
+									Value:  "Destroys the database for the bot",
+									Inline: false,
+								},
 							},
 						},
 						{
@@ -195,6 +233,7 @@ func init() {
 }
 
 func main() {
+
 	var GuildID = os.Getenv("GuildID")
 
 	s.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
@@ -203,7 +242,7 @@ func main() {
 			Activities: []*discordgo.Activity{
 				{
 					Name: "Your Minecraft Server",
-					Type: discordgo.ActivityTypeGame,
+					Type: discordgo.ActivityTypeWatching,
 				},
 			},
 			Status: "online",
@@ -215,7 +254,6 @@ func main() {
 		log.Fatalf("Cannot open the session: %v", err)
 	}
 
-	// Clean up ALL old commands before re-registering
 	existing, err := s.ApplicationCommands(s.State.User.ID, GuildID)
 	if err != nil {
 		log.Fatalf("Failed to list existing commands: %v", err)
