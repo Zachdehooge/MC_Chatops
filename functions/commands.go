@@ -118,9 +118,9 @@ func DatabaseInit() {
 func DatabaseDestroy() {
 	time.Sleep(10 * time.Second)
 
-	isFileExist := checkFileExists(databaseName)
+	doesFileExist := checkFileExists(databaseName)
 
-	if isFileExist {
+	if doesFileExist {
 		log.Printf("Tearing down database %s...", databaseName)
 		os.Remove(databaseName)
 		log.Printf("Database %s destroyed successfully!", databaseName)
