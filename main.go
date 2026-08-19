@@ -26,7 +26,6 @@ func init() {
 	if err != nil {
 		log.Fatalf("Invalid bot parameters: %v | Check the .env", err)
 	}
-
 }
 
 // Slash Commands
